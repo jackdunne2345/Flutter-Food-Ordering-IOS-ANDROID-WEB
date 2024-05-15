@@ -1,0 +1,22 @@
+{
+    "food":[
+        {
+        "id": "1",
+        "name": "Margherita Pizza",
+        "description": "Classic delight with 100% real mozzarella cheese",
+        "price": 5.99
+        },
+        {
+        "id": "2",
+        "name": "Vegan Burger",
+        "description": "A delicious plant-based patty on a fresh bun, with lettuce and sauce",
+        "price": 7.50
+        },
+        {
+        "id": "3",
+        "name": "Chicken Caesar Salad",
+        "description": "Crisp romaine lettuce with grilled chicken breast, topped with Caesar dressing",
+        "price": 6.50
+        }
+    ]
+}
