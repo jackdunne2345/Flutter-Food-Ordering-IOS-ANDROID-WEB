@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:food_order/food.dart';
+import 'package:food_order/widgets/basket_widget.dart';
 import 'package:food_order/widgets/menu_widget.dart';
 
 void main() {
@@ -65,26 +66,45 @@ class _MyHomePageState extends State<MyHomePage> {
         title: Text(
             '${widget.title}, Width: $currentWidth, Height: $currentHeith'),
       ),
-      body: Center(
-        child: FutureBuilder<dynamic>(
-          future: _foods,
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const CircularProgressIndicator();
-            } else if (snapshot.data is String) {
-              return Text('Error: ${snapshot.error}');
-            } else if (snapshot.data is FoodList) {
-              final foodList = snapshot.data!;
-              return MenuWidget(
-                foodList: foodList,
-                width: currentWidth,
-                height: currentHeith,
-              );
-            } else {
-              return const Text('Oh no! Something went wrong');
-            }
-          },
-        ),
+      body: Row(
+        children: [
+          SizedBox(
+            height: currentHeith,
+            width: currentWidth / 2,
+            child: Center(
+              child: FutureBuilder<dynamic>(
+                future: _foods,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const CircularProgressIndicator();
+                  } else if (snapshot.data is String) {
+                    return Text('Error: ${snapshot.error}');
+                  } else if (snapshot.data is FoodList) {
+                    final foodList = snapshot.data!;
+                    return Container(
+                      child: LayoutBuilder(
+                          builder: (context, constraints) => MenuWidget(
+                                foodList: foodList,
+                                parentConstraint: constraints,
+                              )),
+                    );
+                  } else {
+                    return const Text('Oh no! Something went wrong');
+                  }
+                },
+              ),
+            ),
+          ),
+          SizedBox(
+            height: currentHeith,
+            width: currentWidth / 2,
+            child: Center(
+              child: LayoutBuilder(
+                builder: (context, constraints) => const BasketWidget(),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
