@@ -81,12 +81,12 @@ class _MyHomePageState extends State<MyHomePage> {
                     return Text('Error: ${snapshot.error}');
                   } else if (snapshot.data is FoodList) {
                     final foodList = snapshot.data!;
-                    return Container(
-                      child: LayoutBuilder(
-                          builder: (context, constraints) => MenuWidget(
-                                foodList: foodList,
-                                parentConstraint: constraints,
-                              )),
+
+                    return LayoutBuilder(
+                      builder: (context, constraints) => MenuWidget(
+                        foodList: foodList,
+                        parentConstraint: constraints,
+                      ),
                     );
                   } else {
                     return const Text('Oh no! Something went wrong');
@@ -100,7 +100,8 @@ class _MyHomePageState extends State<MyHomePage> {
             width: currentWidth / 2,
             child: Center(
               child: LayoutBuilder(
-                builder: (context, constraints) => const BasketWidget(),
+                builder: (context, constraints) =>
+                    BasketWidget(parentConstraint: constraints),
               ),
             ),
           ),

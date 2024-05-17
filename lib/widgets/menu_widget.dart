@@ -13,35 +13,56 @@ class MenuWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
       width: parentConstraint.maxWidth,
-      child: Center(
+      child: Padding(
+        padding: const EdgeInsets.all(8),
         child: ListView.separated(
           itemCount: foodList.food!.length,
-          separatorBuilder: (context, index) => SizedBox(
-              height: parentConstraint.maxHeight /
-                  (parentConstraint.maxHeight - 1)),
+          separatorBuilder: (context, index) => const SizedBox(
+            height: 5,
+          ),
           itemBuilder: (context, index) {
             final food = foodList.food?[index];
-            return Container(
-              color: const Color.fromRGBO(238, 153, 5, 1),
-              child: ListTile(
-                title: Text(food!.name!),
-                subtitle: Text(food.description!),
-                trailing: LayoutBuilder(
-                  builder: (context, constraints) => SizedBox(
-                      width: constraints.maxWidth / 3,
-                      child: Container(
-                        color: Colors.red,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
+            return ClipRRect(
+              borderRadius: BorderRadius.circular(8.0),
+              child: Container(
+                color: const Color.fromRGBO(238, 153, 5, 1),
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(10, 3, 3, 10),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            ElevatedButton(
-                                onPressed: () => {}, child: const Text('+')),
-                            SizedBox(width: constraints.maxWidth * 0.004),
-                            ElevatedButton(
-                                onPressed: () => {}, child: const Text('-')),
+                            Text(
+                              food!.name!,
+                              style: const TextStyle(
+                                  fontSize: 20.0, fontWeight: FontWeight.bold),
+                            ),
+                            Text(food.description!),
+                            Text(
+                              '€${food.price!.toStringAsFixed(2)}',
+                              style: const TextStyle(
+                                  fontSize: 16.0, fontWeight: FontWeight.bold),
+                            ),
                           ],
                         ),
-                      )),
+                      ),
+                      SizedBox(
+                        width: 25,
+                        height: 25,
+                        child: ElevatedButton(
+                          onPressed: () => {},
+                          style: ElevatedButton.styleFrom(
+                            padding: EdgeInsets.zero,
+                            shape: const CircleBorder(),
+                          ),
+                          child: const Icon(Icons.add, size: 15),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             );
