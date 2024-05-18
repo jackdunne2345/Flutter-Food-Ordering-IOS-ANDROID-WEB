@@ -79,28 +79,28 @@ class _MyHomePageState extends State<MyHomePage> {
           } else if (snapshot.data is FoodList) {
             final foodList = snapshot.data!;
 
-            return Row(
-              children: [
-                SizedBox(
-                  width: parentBoxConstraints.maxWidth * 0.8,
-                  child: LayoutBuilder(
-                    builder: (context, constraints) => MenuWidget(
-                      foodList: foodList,
-                      parentConstraint: constraints,
+            return ChangeNotifierProvider(
+              create: (context) => BasketModel(),
+              child: Row(
+                children: [
+                  SizedBox(
+                    width: parentBoxConstraints.maxWidth * 0.65,
+                    child: LayoutBuilder(
+                      builder: (context, constraints) => MenuWidget(
+                        foodList: foodList,
+                        parentConstraint: constraints,
+                      ),
                     ),
                   ),
-                ),
-                SizedBox(
-                  width: parentBoxConstraints.maxWidth * 0.2,
-                  child: LayoutBuilder(
-                    builder: (context, constraints) => ChangeNotifierProvider(
-                      create: (context) => BasketModel(),
-                      child: BasketWidget(
+                  SizedBox(
+                    width: parentBoxConstraints.maxWidth * 0.35,
+                    child: LayoutBuilder(
+                      builder: (context, constraints) => BasketWidget(
                           foodList: foodList, parentConstraint: constraints),
                     ),
                   ),
-                )
-              ],
+                ],
+              ),
             );
           } else {
             return const Text('Oh no! Something went wrong');

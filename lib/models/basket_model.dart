@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class BasketModel extends ChangeNotifier {
-  Map<int, int> _basket = {2: 4, 3: 6};
+  Map<int, int> _basket = {1: 1};
   Map<int, int> get basket => _basket;
 
   void add(int key) {
