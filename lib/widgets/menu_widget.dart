@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:food_order/food.dart';
 
-class MenuWidget extends StatelessWidget {
+class MenuWidget extends StatefulWidget {
   final FoodList foodList;
 
   final BoxConstraints parentConstraint;
@@ -10,18 +10,23 @@ class MenuWidget extends StatelessWidget {
       {super.key, required this.foodList, required this.parentConstraint});
 
   @override
+  State<MenuWidget> createState() => _MenuWidgetState();
+}
+
+class _MenuWidgetState extends State<MenuWidget> {
+  @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: parentConstraint.maxWidth,
+      width: widget.parentConstraint.maxWidth,
       child: Padding(
         padding: const EdgeInsets.all(8),
         child: ListView.separated(
-          itemCount: foodList.food!.length,
+          itemCount: widget.foodList.food!.length,
           separatorBuilder: (context, index) => const SizedBox(
             height: 5,
           ),
           itemBuilder: (context, index) {
-            final food = foodList.food?[index];
+            final food = widget.foodList.food?[index];
             return ClipRRect(
               borderRadius: BorderRadius.circular(8.0),
               child: Container(

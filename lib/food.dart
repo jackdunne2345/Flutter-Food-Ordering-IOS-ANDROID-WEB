@@ -21,10 +21,19 @@ class FoodList {
     }
     return data;
   }
+
+  Food? findFoodById(int id) {
+    for (Food item in food!) {
+      if (item.id == id) {
+        return item;
+      }
+    }
+    return null;
+  }
 }
 
 class Food {
-  String? id;
+  int? id;
   String? name;
   String? description;
   double? price;

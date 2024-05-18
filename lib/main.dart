@@ -3,8 +3,10 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:food_order/food.dart';
+import 'package:food_order/models/basket_model.dart';
 import 'package:food_order/widgets/basket_widget.dart';
 import 'package:food_order/widgets/menu_widget.dart';
+import 'package:provider/provider.dart';
 
 void main() {
   runApp(const MyApp());
@@ -59,53 +61,51 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    final currentWidth = MediaQuery.of(context).size.width;
-    final currentHeith = MediaQuery.of(context).size.height;
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-            '${widget.title}, Width: $currentWidth, Height: $currentHeith'),
+        title: Text(widget.title),
       ),
-      body: Row(
-        children: [
-          SizedBox(
-            height: currentHeith,
-            width: currentWidth / 2,
-            child: Center(
-              child: FutureBuilder<dynamic>(
-                future: _foods,
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const CircularProgressIndicator();
-                  } else if (snapshot.data is String) {
-                    return Text('Error: ${snapshot.error}');
-                  } else if (snapshot.data is FoodList) {
-                    final foodList = snapshot.data!;
+      body: FutureBuilder<dynamic>(
+        future: _foods,
+        builder: (context, snapshot) {
+          final parentBoxConstraints = BoxConstraints.tightFor(
+            width: MediaQuery.of(context).size.width,
+            height: MediaQuery.of(context).size.height,
+          );
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const CircularProgressIndicator();
+          } else if (snapshot.data is String) {
+            return Text('Error: ${snapshot.error}');
+          } else if (snapshot.data is FoodList) {
+            final foodList = snapshot.data!;
 
-                    return LayoutBuilder(
-                      builder: (context, constraints) => MenuWidget(
-                        foodList: foodList,
-                        parentConstraint: constraints,
-                      ),
-                    );
-                  } else {
-                    return const Text('Oh no! Something went wrong');
-                  }
-                },
-              ),
-            ),
-          ),
-          SizedBox(
-            height: currentHeith,
-            width: currentWidth / 2,
-            child: Center(
-              child: LayoutBuilder(
-                builder: (context, constraints) =>
-                    BasketWidget(parentConstraint: constraints),
-              ),
-            ),
-          ),
-        ],
+            return Row(
+              children: [
+                SizedBox(
+                  width: parentBoxConstraints.maxWidth * 0.8,
+                  child: LayoutBuilder(
+                    builder: (context, constraints) => MenuWidget(
+                      foodList: foodList,
+                      parentConstraint: constraints,
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  width: parentBoxConstraints.maxWidth * 0.2,
+                  child: LayoutBuilder(
+                    builder: (context, constraints) => ChangeNotifierProvider(
+                      create: (context) => BasketModel(),
+                      child: BasketWidget(
+                          foodList: foodList, parentConstraint: constraints),
+                    ),
+                  ),
+                )
+              ],
+            );
+          } else {
+            return const Text('Oh no! Something went wrong');
+          }
+        },
       ),
     );
   }
