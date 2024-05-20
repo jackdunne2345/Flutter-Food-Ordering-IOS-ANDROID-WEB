@@ -3,6 +3,13 @@ import 'package:flutter/material.dart';
 class BasketModel extends ChangeNotifier {
   Map<int, int> _basket = {1: 1};
   Map<int, int> get basket => _basket;
+  bool _checkOut = false;
+  bool get checkOut => _checkOut;
+
+  void setCheckOut() {
+    _checkOut = !_checkOut;
+    notifyListeners();
+  }
 
   void add(int key) {
     if (_basket.containsKey(key)) {

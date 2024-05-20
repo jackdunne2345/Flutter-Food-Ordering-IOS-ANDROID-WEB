@@ -6,10 +6,7 @@ import 'package:provider/provider.dart';
 class MenuWidget extends StatefulWidget {
   final FoodList foodList;
 
-  final BoxConstraints parentConstraint;
-
-  const MenuWidget(
-      {super.key, required this.foodList, required this.parentConstraint});
+  const MenuWidget({super.key, required this.foodList});
 
   @override
   State<MenuWidget> createState() => _MenuWidgetState();
@@ -19,21 +16,29 @@ class _MenuWidgetState extends State<MenuWidget> {
   @override
   Widget build(BuildContext context) {
     return Consumer<BasketModel>(
-      builder: (context, value, child) => SizedBox(
-        width: widget.parentConstraint.maxWidth,
-        child: Padding(
-          padding: const EdgeInsets.all(8),
-          child: ListView.separated(
-            itemCount: widget.foodList.food!.length,
-            separatorBuilder: (context, index) => const SizedBox(
-              height: 5,
-            ),
-            itemBuilder: (context, index) {
-              final food = widget.foodList.food?[index];
-              return ClipRRect(
-                borderRadius: BorderRadius.circular(8.0),
-                child: Container(
-                  color: const Color.fromRGBO(238, 153, 5, 1),
+      builder: (context, value, child) => Center(
+        child: LayoutBuilder(builder: (context, constraints) {
+          return Container(
+            width: constraints.maxWidth,
+            height: constraints.maxHeight,
+            color: Color.fromARGB(255, 251, 249, 246),
+            child: ListView.separated(
+              padding: const EdgeInsets.all(10.0),
+              itemCount: widget.foodList.food!.length,
+              separatorBuilder: (context, index) => const SizedBox(
+                height: 5,
+              ),
+              itemBuilder: (context, index) {
+                final food = widget.foodList.food?[index];
+                return Container(
+                  decoration: BoxDecoration(
+                    color: Color.fromARGB(255, 255, 255, 255),
+                    border: Border.all(
+                      color: Color.fromARGB(255, 197, 195, 188),
+                      width: 2,
+                    ),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
                   child: Padding(
                     padding: const EdgeInsets.fromLTRB(10, 3, 3, 10),
                     child: Row(
@@ -78,11 +83,11 @@ class _MenuWidgetState extends State<MenuWidget> {
                       ],
                     ),
                   ),
-                ),
-              );
-            },
-          ),
-        ),
+                );
+              },
+            ),
+          );
+        }),
       ),
     );
   }
