@@ -202,10 +202,12 @@ class BasketWidget extends StatelessWidget {
                           ),
                         ),
                       ),
-                      ElevatedButton(
-                          onPressed: () => {value.setCheckOut()},
-                          child: Text(
-                              "Checkout (€${(_calculateTotal(value.basket) + 3).toStringAsFixed(2)})"))
+                      if (!value.checkOut)
+                        ElevatedButton(
+                            onPressed: () =>
+                                {value.setCheckOut(), value.setBasket(false)},
+                            child: Text(
+                                "Checkout (€${(_calculateTotal(value.basket) + 3).toStringAsFixed(2)})"))
                     ],
                   ),
                 )

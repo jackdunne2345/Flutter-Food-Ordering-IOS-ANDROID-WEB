@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:food_order/models/basket_model.dart';
 import 'package:provider/provider.dart';
+import 'dart:math';
 
 class CheckOutWidget extends StatefulWidget {
   @override
@@ -19,15 +20,44 @@ class _CheckOutWidgetState extends State<CheckOutWidget> {
     super.dispose();
   }
 
+  void _showDialog(String firstName, String lastName) {
+    String generateRandomString(int length) {
+      const characters = 'abcdefghijklmnopqrstuvwxyz0123456789';
+      final random = Random();
+      return String.fromCharCodes(Iterable.generate(
+        length,
+        (_) => characters.codeUnitAt(random.nextInt(characters.length)),
+      ));
+    }
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Your food is on the way $firstName $lastName!'),
+          content: Text('Your order number is ${generateRandomString(10)}.'),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('OK'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Consumer<BasketModel>(
       builder: (context, value, child) {
         return Scaffold(
           appBar: AppBar(
-            title: Text('Check Out'),
+            title: const Text('Check Out'),
             leading: IconButton(
-              icon: Icon(Icons.arrow_back),
+              icon: const Icon(Icons.arrow_back),
               onPressed: () {
                 value.setCheckOut();
               },
@@ -42,7 +72,7 @@ class _CheckOutWidgetState extends State<CheckOutWidget> {
                 children: [
                   TextFormField(
                     controller: _firstNameController,
-                    decoration: InputDecoration(labelText: 'First Name'),
+                    decoration: const InputDecoration(labelText: 'First Name'),
                     validator: (value) {
                       if (value == null || value.isEmpty) {
                         return 'Please enter your first name';
@@ -52,12 +82,17 @@ class _CheckOutWidgetState extends State<CheckOutWidget> {
                   ),
                   TextFormField(
                     controller: _surnameController,
-                    decoration: InputDecoration(labelText: 'Surname'),
+                    decoration: const InputDecoration(labelText: 'Surname'),
                   ),
-                  SizedBox(height: 20),
+                  const SizedBox(height: 20),
                   ElevatedButton(
-                    onPressed: () => {},
-                    child: Text('Submit'),
+                    onPressed: () {
+                      if (_formKey.currentState?.validate() ?? false) {
+                        _showDialog(
+                            _firstNameController.text, _surnameController.text);
+                      }
+                    },
+                    child: const Text('Submit'),
                   ),
                 ],
               ),

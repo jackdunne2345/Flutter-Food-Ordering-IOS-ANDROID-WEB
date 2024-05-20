@@ -1,5 +1,6 @@
 import 'dart:convert';
-
+import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:food_order/food.dart';
@@ -19,14 +20,6 @@ class ResturauntWidget extends StatefulWidget {
 class _ResturauntWidgetState extends State<ResturauntWidget>
     with TickerProviderStateMixin {
   late Future<dynamic> _foods;
-  bool _showBasket = false;
-
-  void _toggleBasket() {
-    setState(() {
-      _showBasket = !_showBasket;
-      print(_showBasket);
-    });
-  }
 
   @override
   void initState() {
@@ -64,35 +57,23 @@ class _ResturauntWidgetState extends State<ResturauntWidget>
                   return Center(
                     child: LayoutBuilder(
                       builder: (context, constraints) {
-                        if (constraints.maxWidth > 640) {
-                          return Scaffold(
-                            appBar: AppBar(
-                              title: Text("Food Store"),
-                            ),
-                            body: Row(
-                              children: [
-                                SizedBox(
-                                    width: parentBoxConstraints.maxWidth * 0.65,
-                                    child: value.checkOut
-                                        ? CheckOutWidget()
-                                        : MenuWidget(
-                                            foodList: foodList,
-                                          )),
-                                SizedBox(
-                                  width: parentBoxConstraints.maxWidth * 0.35,
-                                  child: BasketWidget(foodList: foodList),
-                                ),
-                              ],
-                            ),
-                          );
+                        bool isMobile = false;
+
+                        if (kIsWeb) {
+                          isMobile = constraints.maxWidth < 640;
                         } else {
+                          isMobile = constraints.maxWidth < 640 ||
+                              Platform.isAndroid ||
+                              Platform.isIOS;
+                        }
+                        if (isMobile) {
                           return Scaffold(
                             appBar: AppBar(
-                              title: Text("Food Store"),
+                              title: const Text("Food Store"),
                               actions: [
                                 IconButton(
                                   icon: const Icon(Icons.shopping_basket),
-                                  onPressed: _toggleBasket,
+                                  onPressed: value.toggleBasket,
                                 ),
                               ],
                             ),
@@ -105,7 +86,7 @@ class _ResturauntWidgetState extends State<ResturauntWidget>
                                       ),
                                 AnimatedSwitcher(
                                   duration: Duration(milliseconds: 200),
-                                  child: _showBasket
+                                  child: value.showBasket
                                       ? Center(
                                           child: ScaleTransition(
                                               scale: CurvedAnimation(
@@ -127,8 +108,8 @@ class _ResturauntWidgetState extends State<ResturauntWidget>
                                                     child: Container(
                                                       decoration: BoxDecoration(
                                                         borderRadius:
-                                                            BorderRadius.circular(
-                                                                10), // Adjust the radius as needed
+                                                            BorderRadius
+                                                                .circular(10),
                                                         border: Border.all(
                                                           color: const Color
                                                               .fromARGB(255,
@@ -146,6 +127,28 @@ class _ResturauntWidgetState extends State<ResturauntWidget>
                                           //
                                           )
                                       : const SizedBox(),
+                                ),
+                              ],
+                            ),
+                          );
+                        } else {
+                          value.setBasket(false);
+                          return Scaffold(
+                            appBar: AppBar(
+                              title: Text("Food Store"),
+                            ),
+                            body: Row(
+                              children: [
+                                SizedBox(
+                                    width: parentBoxConstraints.maxWidth * 0.65,
+                                    child: value.checkOut
+                                        ? CheckOutWidget()
+                                        : MenuWidget(
+                                            foodList: foodList,
+                                          )),
+                                SizedBox(
+                                  width: parentBoxConstraints.maxWidth * 0.35,
+                                  child: BasketWidget(foodList: foodList),
                                 ),
                               ],
                             ),

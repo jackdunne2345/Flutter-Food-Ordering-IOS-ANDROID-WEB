@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:food_order/food.dart';
 import 'package:food_order/models/basket_model.dart';
 import 'package:provider/provider.dart';
+import 'package:food_order/dialogs/food_dialog.dart';
 
 class MenuWidget extends StatefulWidget {
   final FoodList foodList;
@@ -30,60 +31,69 @@ class _MenuWidgetState extends State<MenuWidget> {
               ),
               itemBuilder: (context, index) {
                 final food = widget.foodList.food?[index];
-                return Container(
-                  decoration: BoxDecoration(
-                    color: Color.fromARGB(255, 255, 255, 255),
-                    border: Border.all(
-                      color: Color.fromARGB(255, 197, 195, 188),
-                      width: 2,
-                    ),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(10, 3, 3, 10),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Expanded(
-                          child: Column(
+                return GestureDetector(
+                    onTap: () {
+                      showFoodDetailsDialog(context, food, value);
+                    },
+                    child: InkWell(
+                      onTap: () {
+                        showFoodDetailsDialog(context, food, value);
+                      },
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Color.fromARGB(255, 255, 255, 255),
+                          border: Border.all(
+                            color: Color.fromARGB(255, 197, 195, 188),
+                            width: 2,
+                          ),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.fromLTRB(10, 3, 3, 10),
+                          child: Row(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
-                                food!.name!,
-                                style: const TextStyle(
-                                    fontSize: 20.0,
-                                    fontWeight: FontWeight.bold),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      food!.name!,
+                                      style: const TextStyle(
+                                          fontSize: 20.0,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    Text(food.description!),
+                                    Text(
+                                      '€${food.price!.toStringAsFixed(2)}',
+                                      style: const TextStyle(
+                                          fontSize: 16.0,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  ],
+                                ),
                               ),
-                              Text(food.description!),
-                              Text(
-                                '€${food.price!.toStringAsFixed(2)}',
-                                style: const TextStyle(
-                                    fontSize: 16.0,
-                                    fontWeight: FontWeight.bold),
+                              Padding(
+                                padding: const EdgeInsets.fromLTRB(0, 5, 15, 0),
+                                child: SizedBox(
+                                  width: 25,
+                                  height: 25,
+                                  child: ElevatedButton(
+                                      onPressed: () => {value.add(food.id!)},
+                                      style: ElevatedButton.styleFrom(
+                                        padding: EdgeInsets.zero,
+                                        shape: const CircleBorder(),
+                                      ),
+                                      child: (value.basket.containsKey(food.id))
+                                          ? Text('${value.basket[food.id!]}')
+                                          : Icon(Icons.add, size: 15)),
+                                ),
                               ),
                             ],
                           ),
                         ),
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(0, 5, 15, 0),
-                          child: SizedBox(
-                            width: 25,
-                            height: 25,
-                            child: ElevatedButton(
-                                onPressed: () => {value.add(food.id!)},
-                                style: ElevatedButton.styleFrom(
-                                  padding: EdgeInsets.zero,
-                                  shape: const CircleBorder(),
-                                ),
-                                child: (value.basket.containsKey(food.id))
-                                    ? Text('${value.basket[food.id!]}')
-                                    : Icon(Icons.add, size: 15)),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                );
+                      ),
+                    ));
               },
             ),
           );

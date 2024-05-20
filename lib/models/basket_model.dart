@@ -5,6 +5,18 @@ class BasketModel extends ChangeNotifier {
   Map<int, int> get basket => _basket;
   bool _checkOut = false;
   bool get checkOut => _checkOut;
+  bool _showBasket = false;
+  bool get showBasket => _showBasket;
+
+  void toggleBasket() {
+    _showBasket = !_showBasket;
+    notifyListeners();
+  }
+
+  void setBasket(bool value) {
+    _showBasket = value;
+    notifyListeners();
+  }
 
   void setCheckOut() {
     _checkOut = !_checkOut;
