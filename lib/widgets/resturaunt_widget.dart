@@ -143,8 +143,16 @@ class _ResturauntWidgetState extends State<ResturauntWidget>
                                               ),
                                               color: Colors.white,
                                             ),
-                                            child: BasketWidget(
-                                              foodList: foodList,
+                                            child: PopScope(
+                                              canPop: false,
+                                              onPopInvoked: (pop) => {
+                                                setState(() {
+                                                  _showBasket = !_showBasket;
+                                                }),
+                                              },
+                                              child: BasketWidget(
+                                                foodList: foodList,
+                                              ),
                                             ),
                                           ),
                                         ),
