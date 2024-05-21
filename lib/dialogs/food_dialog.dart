@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
 import 'package:food_order/food.dart';
 
 import '../models/basket_model.dart';
@@ -34,7 +33,7 @@ void showFoodDetailsDialog(
                             ),
                           ),
                         ),
-                        Spacer(),
+                        const Spacer(),
                         FittedBox(
                           fit: BoxFit.scaleDown,
                           child: TextButton(

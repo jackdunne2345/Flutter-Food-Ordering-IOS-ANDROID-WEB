@@ -11,7 +11,7 @@ import 'package:food_order/widgets/menu_widget.dart';
 import 'package:provider/provider.dart';
 
 class ResturauntWidget extends StatefulWidget {
-  ResturauntWidget({Key? key}) : super(key: key);
+  const ResturauntWidget({super.key});
 
   @override
   _ResturauntWidgetState createState() => _ResturauntWidgetState();
@@ -39,6 +39,7 @@ class _ResturauntWidgetState extends State<ResturauntWidget>
     }
   }
 
+  @override
   Widget build(BuildContext context) {
     return FutureBuilder<dynamic>(
       future: _foods,
