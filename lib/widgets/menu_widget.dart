@@ -19,10 +19,9 @@ class _MenuWidgetState extends State<MenuWidget> {
     return Consumer<BasketModel>(
       builder: (context, value, child) => Center(
         child: LayoutBuilder(builder: (context, constraints) {
-          return Container(
+          return SizedBox(
             width: constraints.maxWidth,
             height: constraints.maxHeight,
-            color: Color.fromARGB(255, 251, 249, 246),
             child: ListView.separated(
               padding: const EdgeInsets.all(10.0),
               itemCount: widget.foodList.food!.length,
@@ -83,10 +82,19 @@ class _MenuWidgetState extends State<MenuWidget> {
                                       style: ElevatedButton.styleFrom(
                                         padding: EdgeInsets.zero,
                                         shape: const CircleBorder(),
+                                        backgroundColor: Colors.orange,
                                       ),
                                       child: (value.basket.containsKey(food.id))
-                                          ? Text('${value.basket[food.id!]}')
-                                          : Icon(Icons.add, size: 15)),
+                                          ? Text(
+                                              '${value.basket[food.id!]}',
+                                              style: const TextStyle(
+                                                  color: Colors.white),
+                                            )
+                                          : const Icon(
+                                              Icons.add,
+                                              size: 15,
+                                              color: Colors.white,
+                                            )),
                                 ),
                               ),
                             ],
