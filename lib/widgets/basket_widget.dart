@@ -243,7 +243,6 @@ class BasketWidget extends StatelessWidget {
                                             Colors.orange)),
                                 onPressed: () => {
                                       value.setCheckOut(),
-                                      value.setBasket(false)
                                     },
                                 child: Text(
                                   "Checkout (€${(_calculateTotal(value.basket) + 3).toStringAsFixed(2)})",

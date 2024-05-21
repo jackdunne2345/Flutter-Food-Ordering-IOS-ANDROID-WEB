@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class BasketModel extends ChangeNotifier {
-  Map<int, int> _basket = {};
+  Map<int, int> _basket = {1: 1};
   Map<int, int> get basket => _basket;
   bool _checkOut = false;
   bool get checkOut => _checkOut;
@@ -59,6 +59,7 @@ class BasketModel extends ChangeNotifier {
   }
 
   List toList() {
+    print(basket.entries.toList());
     return basket.entries.toList();
   }
 

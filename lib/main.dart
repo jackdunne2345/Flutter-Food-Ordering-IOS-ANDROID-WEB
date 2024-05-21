@@ -39,6 +39,6 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-        create: (context) => BasketModel(), child: const ResturauntWidget());
+        create: (context) => BasketModel(), child: ResturauntWidget());
   }
 }
