@@ -20,12 +20,13 @@ class ResturauntWidget extends StatefulWidget {
 class _ResturauntWidgetState extends State<ResturauntWidget>
     with TickerProviderStateMixin {
   late Future<dynamic> _foods;
-  late bool _showBasket;
+  bool _showBasket = false;
+  //added this to kep track of when the checkout widget binds and sets the state of the basket to false
+  bool _hasSetBasketFalse = false;
   @override
   void initState() {
     super.initState();
     _foods = readJson('food');
-    _showBasket = false;
   }
 
   Future<dynamic> readJson(String path) async {
@@ -54,7 +55,6 @@ class _ResturauntWidgetState extends State<ResturauntWidget>
           return LayoutBuilder(
             builder: (context, constraints) {
               bool isMobile = false;
-
               if (kIsWeb) {
                 isMobile = constraints.maxWidth < 640;
               } else {
@@ -100,80 +100,115 @@ class _ResturauntWidgetState extends State<ResturauntWidget>
                       return Stack(
                         children: [
                           Consumer<BasketModel>(
-                            builder: (context, value, child) => Container(
-                              child: value.checkOut
-                                  ? CheckOutWidget()
-                                  : MenuWidget(
-                                      foodList: foodList,
-                                    ),
-                            ),
-                          ),
-                          AnimatedSwitcher(
-                            duration: const Duration(milliseconds: 200),
-                            switchInCurve: Curves.easeOutBack,
-                            transitionBuilder:
-                                (Widget child, Animation<double> animation) {
-                              return ScaleTransition(
-                                scale: animation,
-                                child: child,
+                            builder: (context, value, child) {
+                              if (value.checkOut && !_hasSetBasketFalse) {
+                                WidgetsBinding.instance
+                                    .addPostFrameCallback((_) {
+                                  if (mounted) {
+                                    setState(() {
+                                      _showBasket = false;
+                                      _hasSetBasketFalse = true;
+                                    });
+                                  }
+                                });
+                              } else if (!value.checkOut &&
+                                  _hasSetBasketFalse) {
+                                WidgetsBinding.instance
+                                    .addPostFrameCallback((_) {
+                                  if (mounted) {
+                                    setState(() {
+                                      _hasSetBasketFalse = false;
+                                    });
+                                  }
+                                });
+                              }
+                              return Container(
+                                child: value.checkOut
+                                    ? PopScope(
+                                        canPop: false,
+                                        onPopInvoked: (pop) => {
+                                              if (!_showBasket)
+                                                value.setCheckOut()
+                                            },
+                                        child: CheckOutWidget())
+                                    : MenuWidget(
+                                        foodList: foodList,
+                                      ),
                               );
                             },
-                            child: _showBasket
-                                ? Container(
-                                    color: const Color.fromARGB(
-                                        200, 164, 162, 162),
-                                    child: Center(
-                                      key: UniqueKey(),
+                          ),
+                          Container(
+                            color: const Color.fromARGB(200, 164, 162, 162),
+                            child: AnimatedSwitcher(
+                              duration: const Duration(milliseconds: 200),
+                              switchInCurve: Curves.easeOutBack,
+                              transitionBuilder:
+                                  (Widget child, Animation<double> animation) {
+                                return ScaleTransition(
+                                  scale: animation,
+                                  child: child,
+                                );
+                              },
+                              child: _showBasket
+                                  ? Container(
                                       child: Center(
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(15.0),
-                                          child: Container(
-                                            constraints: BoxConstraints(
-                                              maxHeight: constraints.maxHeight,
-                                              minHeight:
-                                                  constraints.maxHeight * 0.3,
-                                            ),
-                                            decoration: BoxDecoration(
-                                              borderRadius:
-                                                  BorderRadius.circular(10),
-                                              border: Border.all(
-                                                color: const Color.fromARGB(
-                                                    255, 128, 124, 124),
-                                                width: 2,
+                                        key: UniqueKey(),
+                                        child: Center(
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(15.0),
+                                            child: Container(
+                                              constraints: BoxConstraints(
+                                                maxHeight:
+                                                    constraints.maxHeight,
+                                                minHeight:
+                                                    constraints.maxHeight * 0.3,
                                               ),
-                                              color: Colors.white,
-                                            ),
-                                            child: PopScope(
-                                              canPop: false,
-                                              onPopInvoked: (pop) => {
-                                                setState(() {
-                                                  _showBasket = !_showBasket;
-                                                }),
-                                              },
-                                              child: BasketWidget(
-                                                foodList: foodList,
+                                              decoration: BoxDecoration(
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                                border: Border.all(
+                                                  color: const Color.fromARGB(
+                                                      255, 128, 124, 124),
+                                                  width: 2,
+                                                ),
+                                                color: Colors.white,
+                                              ),
+                                              child: PopScope(
+                                                canPop: false,
+                                                onPopInvoked: (pop) => {
+                                                  setState(() {
+                                                    _showBasket = !_showBasket;
+                                                  }),
+                                                },
+                                                child: BasketWidget(
+                                                  foodList: foodList,
+                                                ),
                                               ),
                                             ),
                                           ),
                                         ),
                                       ),
-                                    ),
-                                  )
-                                : const SizedBox(),
+                                    )
+                                  : const SizedBox(),
+                            ),
                           ),
                         ],
                       );
                     } else {
-                      setState(() {
-                        _showBasket = false;
-                      });
+                      // I was setting state while it was building.
+                      _showBasket = false;
+
                       return Row(
                         children: [
                           Consumer<BasketModel>(
                             builder: (context, value, child) => SizedBox(
                                 width: constrants.maxWidth * 0.65,
                                 child: value.checkOut
-                                    ? CheckOutWidget()
+                                    ? PopScope(
+                                        canPop: false,
+                                        onPopInvoked: (pop) =>
+                                            value.setCheckOut(),
+                                        child: CheckOutWidget())
                                     : MenuWidget(
                                         foodList: foodList,
                                       )),

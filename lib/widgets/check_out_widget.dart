@@ -58,63 +58,58 @@ class _CheckOutWidgetState extends State<CheckOutWidget> {
   Widget build(BuildContext context) {
     return Consumer<BasketModel>(
       builder: (context, value, child) {
-        return PopScope(
-          canPop: false,
-          onPopInvoked: (pop) => {value.setCheckOut()},
-          child: Scaffold(
-            appBar: AppBar(
-              title: const Text('Check Out'),
-              leading: IconButton(
-                icon: const Icon(Icons.arrow_back),
-                onPressed: () {
-                  value.setCheckOut();
-                },
-              ),
+        return Scaffold(
+          appBar: AppBar(
+            title: const Text('Check Out'),
+            leading: IconButton(
+              icon: const Icon(Icons.arrow_back),
+              onPressed: () {
+                value.setCheckOut();
+              },
             ),
-            body: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Form(
-                key: _formKey,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    TextFormField(
-                      controller: _firstNameController,
-                      decoration:
-                          const InputDecoration(labelText: 'First Name'),
-                      validator: (textValue) {
-                        if (textValue == null || textValue.isEmpty) {
-                          return 'Please enter your first name';
-                        } else if (value.basket.isEmpty) {
-                          return 'The basket is empty';
+          ),
+          body: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Form(
+              key: _formKey,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  TextFormField(
+                    controller: _firstNameController,
+                    decoration: const InputDecoration(labelText: 'First Name'),
+                    validator: (textValue) {
+                      if (textValue == null || textValue.isEmpty) {
+                        return 'Please enter your first name';
+                      } else if (value.basket.isEmpty) {
+                        return 'The basket is empty';
+                      }
+                      return null;
+                    },
+                  ),
+                  TextFormField(
+                    controller: _surnameController,
+                    decoration: const InputDecoration(labelText: 'Surname'),
+                  ),
+                  const SizedBox(height: 20),
+                  Flexible(
+                    child: ElevatedButton(
+                      onPressed: () {
+                        if ((_formKey.currentState?.validate() ?? false) &&
+                            value.basket.isNotEmpty) {
+                          _showDialog(_firstNameController.text,
+                              _surnameController.text);
+                          value.setCheckOut();
+                          value.empty();
                         }
-                        return null;
                       },
-                    ),
-                    TextFormField(
-                      controller: _surnameController,
-                      decoration: const InputDecoration(labelText: 'Surname'),
-                    ),
-                    const SizedBox(height: 20),
-                    Flexible(
-                      child: ElevatedButton(
-                        onPressed: () {
-                          if ((_formKey.currentState?.validate() ?? false) &&
-                              value.basket.isNotEmpty) {
-                            _showDialog(_firstNameController.text,
-                                _surnameController.text);
-                            value.setCheckOut();
-                            value.empty();
-                          }
-                        },
-                        child: const Text(
-                          'Submit',
-                          style: TextStyle(color: Colors.orange),
-                        ),
+                      child: const Text(
+                        'Submit',
+                        style: TextStyle(color: Colors.orange),
                       ),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
           ),
