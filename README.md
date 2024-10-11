@@ -3,7 +3,11 @@
 [Github page](https://github.com/jackdunne2345/Flutter-Food-Ordering-IOS-ANDROID-WEB)
 A Flutter front end application for ios, android and the web. Utilising provider for state managment.
 
-first install dart and flutter and clone the repository.CD into the directory and in your cmd line run this command.
+first install dart and flutter and clone the repository.CD into the directory and in your cmd line run these commands.
+
+```bash
+$ Flutter pub get
+```
 
 ```bash
 $ Flutter run
